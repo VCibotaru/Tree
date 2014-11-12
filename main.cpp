@@ -31,8 +31,8 @@ Leaf* pLeaf;
 ShaderProgram shaderProgram;
 
 //window size
-int windowWidth = 800;
-int windowHeight = 600;
+int windowWidth = 1000;
+int windowHeight = 1000;
 
 //last mouse coordinates
 int mouseX,mouseY;
@@ -66,22 +66,22 @@ char FragmentShaderName[] = "Fragment.frag";
 ///
 void initTexture()
 {
-    //generate as many textures as you need
+		//generate as many textures as you need
 	glGenTextures(1,&texId[0]);
 	
-    //enable texturing and zero slot
-    glActiveTexture(GL_TEXTURE0);
-    //bind texId to 0 unit
+		//enable texturing and zero slot
+	glActiveTexture(GL_TEXTURE0);
+		//bind texId to 0 unit
 	glBindTexture(GL_TEXTURE_2D,texId[0]);
 
 	//don't use alignment
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	
 	// Set nearest filtering mode for texture minification
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 	//TODO: load texture from file 
 	GLubyte imgData[2*2*3] = {
@@ -101,8 +101,8 @@ void init()
 {
 	//enable depth test
 	glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
 	//initialize shader program
 	shaderProgram.init(VertexShaderName,FragmentShaderName);
 	//use this shader program
@@ -137,127 +137,127 @@ void init()
 ///called when window size is changed
 void reshape(int width, int height)
 {
-  windowWidth = width;
-  windowHeight = height;
-  //set viewport to match window size
-  glViewport(0, 0, width, height);
-  
-  float fieldOfView = 45.0f;
-  float aspectRatio = float(width)/float(height);
-  float zNear = 0.1f;
-  float zFar = 100.0f;
-  //set projection matrix
-  projectionMatrix = glm::perspective(fieldOfView,aspectRatio,zNear,zFar);
+	windowWidth = width;
+	windowHeight = height;
+	//set viewport to match window size
+	glViewport(0, 0, width, height);
+	
+	float fieldOfView = 45.0f;
+	float aspectRatio = float(width)/float(height);
+	float zNear = 0.1f;
+	float zFar = 100.0f;
+	//set projection matrix
+	projectionMatrix = glm::perspective(fieldOfView,aspectRatio,zNear,zFar);
 }
 
 ////////////////////////////////////////////////////////////////////
 ///actions for single frame
 void display()
 {
-  glClearColor(0,0,0,0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glClearColor(0,0,0,0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-  //Draw triangle with shaders (in screen coordinates)
-  //need to set uniform in modelViewMatrix
-  
-  glUseProgram(shaderProgram.programObject);
+	//Draw triangle with shaders (in screen coordinates)
+	//need to set uniform in modelViewMatrix
+	
+	glUseProgram(shaderProgram.programObject);
 
-  //we will need this uniform locations to connect them to our variables
-  int locMV = glGetUniformLocation(shaderProgram.programObject,"modelViewMatrix");
-  int locN = glGetUniformLocation(shaderProgram.programObject,"normalMatrix");
-  int locP = glGetUniformLocation(shaderProgram.programObject,"modelViewProjectionMatrix");
-  int texLoc = glGetUniformLocation(shaderProgram.programObject,"textureSampler");
-  int locFlag = glGetUniformLocation(shaderProgram.programObject,"useTexture");
-  //if there is some problem
-  if (locMV<0 || locN<0 || locP<0 || texLoc <0 || locFlag<0)
-  {
-	  //not all uniforms were allocated - show blue screen.
-	  //check your variables properly. May be there is unused?
-	  glClearColor(0,0,1,1);
-	  glClear(GL_COLOR_BUFFER_BIT);
-	  //end frame visualization
-	  glutSwapBuffers();
-	  return;
-  }
+	//we will need this uniform locations to connect them to our variables
+	int locMV = glGetUniformLocation(shaderProgram.programObject,"modelViewMatrix");
+	int locN = glGetUniformLocation(shaderProgram.programObject,"normalMatrix");
+	int locP = glGetUniformLocation(shaderProgram.programObject,"modelViewProjectionMatrix");
+	int texLoc = glGetUniformLocation(shaderProgram.programObject,"textureSampler");
+	int locFlag = glGetUniformLocation(shaderProgram.programObject,"useTexture");
+	//if there is some problem
+	if (locMV<0 || locN<0 || locP<0 || texLoc <0 || locFlag<0)
+	{
+		//not all uniforms were allocated - show blue screen.
+		//check your variables properly. May be there is unused?
+		glClearColor(0,0,1,1);
+		glClear(GL_COLOR_BUFFER_BIT);
+		//end frame visualization
+		glutSwapBuffers();
+		return;
+	}
 
-  //camera matrix. camera is placed in point "eye" and looks at point "cen".
-  glm::mat4x4 viewMatrix = glm::lookAt(eye,cen,up);
-  
+	//camera matrix. camera is placed in point "eye" and looks at point "cen".
+	glm::mat4x4 viewMatrix = glm::lookAt(eye,cen,up);
 
-  ////////////////////////////////////////////
-  /////////DRAW BRANCH///////////////////////
-  //////////////////////////////////////////
 
-  //modelMatrix is connected with current object
-  modelMatrix=glm::mat4();
-  
-  //3. Translate branch south pole to the point (-0.5, 1.0)
-  modelMatrix= glm::translate(modelMatrix,glm::vec3(-0.5f,1.0f,0.0f));
+	////////////////////////////////////////////
+	/////////DRAW BRANCH///////////////////////
+	//////////////////////////////////////////
 
-  //2. Rotate cylinder 45 degrees to the left
-  modelMatrix = glm::rotate(modelMatrix,45.0f,glm::vec3(0.0f,0.0f,1.0f));
-  
-  //1. Scale. Make cylinder thinner to look like branch
-  modelMatrix = glm::scale(modelMatrix,glm::vec3(0.05f,1.0f,0.05f));
-  
-  
-  //modelViewMatrix consists of viewMatrix and modelMatrix
-  modelViewMatrix = viewMatrix*modelMatrix;
-  //calculate normal matrix 
-  normalMatrix = glm::inverseTranspose(modelViewMatrix);
-  //finally calculate modelViewProjectionMatrix
-  modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
+	//modelMatrix is connected with current object
+	modelMatrix=glm::mat4();
 
-  //bind texture
-  glBindTexture(GL_TEXTURE_2D,texId[0]);
-  
-  
-  //pass variables to the shaders
-  glUniformMatrix4fv(locMV,1,0,glm::value_ptr(modelViewMatrix));
-  glUniformMatrix4fv(locN,1,0,glm::value_ptr(normalMatrix));
-  glUniformMatrix4fv(locP,1,0,glm::value_ptr(modelViewProjectionMatrix));
-  glUniform1ui(texLoc,0);
-  glUniform1i(locFlag,useTexture);
+	//3. Translate branch south pole to the point (-0.5, 1.0)
+	modelMatrix= glm::translate(modelMatrix,glm::vec3(-0.5f,1.0f,0.0f));
 
-  //draw branch
-  pBranch->draw();
+	//2. Rotate cylinder 45 degrees to the left
+	modelMatrix = glm::rotate(modelMatrix,45.0f,glm::vec3(0.0f,0.0f,1.0f));
 
-  //////////////////////////////////////////
-  //////////////DRAW LEAF///////////////////
-  //////////////////////////////////////////
+	//1. Scale. Make cylinder thinner to look like branch
+	modelMatrix = glm::scale(modelMatrix,glm::vec3(0.03f,1.0f,0.03f));
 
-  //modelMatrix is connected with current object
-  modelMatrix=glm::mat4();
-  
-  //3. Translate branch south pole to the north pole of branch
-  modelMatrix= glm::translate(modelMatrix,glm::vec3(-1.0f/sqrt(2.0f)-0.5f,1.0f/sqrt(2.0f)+1.0f,0.0f));
 
-  //2. Scale. Make leaf smaller
-  modelMatrix = glm::scale(modelMatrix,0.3f*glm::vec3(1.0f,1.0f,1.0f));
+	//modelViewMatrix consists of viewMatrix and modelMatrix
+	modelViewMatrix = viewMatrix*modelMatrix;
+	//calculate normal matrix 
+	normalMatrix = glm::inverseTranspose(modelViewMatrix);
+	//finally calculate modelViewProjectionMatrix
+	modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
 
-  //1. Translate branch south pole to (0,0)
-  modelMatrix= glm::translate(modelMatrix,glm::vec3(0.0f,0.0f,0.0f));
-  
-  
-  //modelViewMatrix consists of viewMatrix and modelMatrix
-  modelViewMatrix = viewMatrix*modelMatrix;
-  //calculate normal matrix 
-  normalMatrix = glm::inverseTranspose(modelViewMatrix);
-  //finally calculate modelViewProjectionMatrix
-  modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
-  
-  //pass variables to the shaders
-  glUniformMatrix4fv(locMV,1,0,glm::value_ptr(modelViewMatrix));
-  glUniformMatrix4fv(locN,1,0,glm::value_ptr(normalMatrix));
-  glUniformMatrix4fv(locP,1,0,glm::value_ptr(modelViewProjectionMatrix));
+	//bind texture
+	glBindTexture(GL_TEXTURE_2D,texId[0]);
 
-  //draw leaf
-  pLeaf->draw();
-  
 
-  //end frame visualization
-  glutSwapBuffers();
-  
+	//pass variables to the shaders
+	glUniformMatrix4fv(locMV,1,0,glm::value_ptr(modelViewMatrix));
+	glUniformMatrix4fv(locN,1,0,glm::value_ptr(normalMatrix));
+	glUniformMatrix4fv(locP,1,0,glm::value_ptr(modelViewProjectionMatrix));
+	glUniform1ui(texLoc,0);
+	glUniform1i(locFlag,useTexture);
+
+	//draw branch
+	pBranch->draw();
+
+	//////////////////////////////////////////
+	//////////////DRAW LEAF///////////////////
+	//////////////////////////////////////////
+
+	//modelMatrix is connected with current object
+	modelMatrix=glm::mat4();
+
+	//3. Translate branch south pole to the north pole of branch
+	modelMatrix= glm::translate(modelMatrix,glm::vec3(-1.0f/sqrt(2.0f)-0.5f,1.0f/sqrt(2.0f)+1.0f,0.0f));
+
+	//2. Scale. Make leaf smaller
+	modelMatrix = glm::scale(modelMatrix,0.3f*glm::vec3(1.0f,1.0f,1.0f));
+
+	//1. Translate branch south pole to (0,0)
+	modelMatrix= glm::translate(modelMatrix,glm::vec3(0.0f,0.0f,0.0f));
+
+
+	//modelViewMatrix consists of viewMatrix and modelMatrix
+	modelViewMatrix = viewMatrix*modelMatrix;
+	//calculate normal matrix 
+	normalMatrix = glm::inverseTranspose(modelViewMatrix);
+	//finally calculate modelViewProjectionMatrix
+	modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
+
+	//pass variables to the shaders
+	glUniformMatrix4fv(locMV,1,0,glm::value_ptr(modelViewMatrix));
+	glUniformMatrix4fv(locN,1,0,glm::value_ptr(normalMatrix));
+	glUniformMatrix4fv(locP,1,0,glm::value_ptr(modelViewProjectionMatrix));
+
+	//draw leaf
+	pLeaf->draw();
+
+
+	//end frame visualization
+	glutSwapBuffers();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -308,57 +308,57 @@ void emptydisplay()
 ///entry point
 int main (int argc, char* argv[])
 {
-  glutInit(&argc, argv);
+	glutInit(&argc, argv);
 #ifdef __APPLE__
-  glutInitDisplayMode( GLUT_3_2_CORE_PROFILE| GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode( GLUT_3_2_CORE_PROFILE| GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 #else
-  glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
-  glutInitContextVersion (3, 2);  
-  glutInitContextProfile(GLUT_CORE_PROFILE);
-  glutInitContextFlags (GLUT_FORWARD_COMPATIBLE);
+	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
+	glutInitContextVersion (3, 2);  
+	glutInitContextProfile(GLUT_CORE_PROFILE);
+	glutInitContextFlags (GLUT_FORWARD_COMPATIBLE);
 #endif
-  glewExperimental = GL_TRUE;
-  glutCreateWindow("Test OpenGL application");
-  glutDisplayFunc(display);
-  glutReshapeFunc(reshape);
-  glutReshapeWindow(windowWidth,windowHeight);
-  glutIdleFunc(update);
-  glutKeyboardFunc(keyboard);
-  glutMouseFunc(mouse);
+	glewExperimental = GL_TRUE;
+	glutCreateWindow("Test OpenGL application");
+	glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
+	glutReshapeWindow(windowWidth,windowHeight);
+	glutIdleFunc(update);
+	glutKeyboardFunc(keyboard);
+	glutMouseFunc(mouse);
 
-  glewInit();
-  const char * slVer = (const char *) glGetString ( GL_SHADING_LANGUAGE_VERSION );
-  cout << "GLSL Version: " << slVer << endl;
+	glewInit();
+	const char * slVer = (const char *) glGetString ( GL_SHADING_LANGUAGE_VERSION );
+	cout << "GLSL Version: " << slVer << endl;
 
-  try
-  {
-	init();
-  }
-  catch (const char *str)
-  {
-	  cout << "Error During Initialiation: " << str << endl;
-	  delete pBranch;
-	  delete pLeaf;
-	  glDeleteTextures(1,texId);
-	  //start main loop with empty screen
-	  glutDisplayFunc(emptydisplay);
-	  glutMainLoop();
-	  return -1;
-  }
+	try
+	{
+		init();
+	}
+	catch (const char *str)
+	{
+		cout << "Error During Initialiation: " << str << endl;
+		delete pBranch;
+		delete pLeaf;
+		glDeleteTextures(1,texId);
+		//start main loop with empty screen
+		glutDisplayFunc(emptydisplay);
+		glutMainLoop();
+		return -1;
+	}
 
 
-  try
-  {
-	glutMainLoop();
-  }
-  catch (const char *str)
-  {
-	  cout << "Error During Main Loop: " << str << endl;
-  }
-  //release memory
-  delete pBranch;
-  delete pLeaf;
+	try
+	{
+		glutMainLoop();
+	}
+	catch (const char *str)
+	{
+		cout << "Error During Main Loop: " << str << endl;
+	}
+	//release memory
+	delete pBranch;
+	delete pLeaf;
 
-  glDeleteTextures(1,texId);
-  return 0;
+	glDeleteTextures(1,texId);
+	return 0;
 }

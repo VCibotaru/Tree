@@ -5,9 +5,9 @@
 //contains position, normal and texture coordinates
 struct VertexData
 {
-	 glm::vec3 pos;
-	 glm::vec3 nor;
-	 glm::vec2 tex;
+	glm::vec3 pos;
+	glm::vec3 nor;
+	glm::vec2 tex;
 };
 
 
