@@ -12,8 +12,9 @@ Tree::~Tree() {
 void Tree::drawNodes() {
 	root->draw();
 }
-void Tree::grow() {
 
+void Tree::grow() {
+	root->grow();
 }
 
 void Tree::keyboard(unsigned char key, int mx, int my)
@@ -21,7 +22,7 @@ void Tree::keyboard(unsigned char key, int mx, int my)
 	if (key==' ') {
 		useTexture = !useTexture;
 	}
-	if (key == 't') {
+	if (key == 'g') {
 	}
 	if (key == 'a') {
 

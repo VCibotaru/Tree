@@ -6,27 +6,37 @@
 
 class Tree;
 
+const float SCALE_X = 0.01f;
+const float SCALE_Y = 1.0f;
+const float SCALE_Z = 0.03f;
+const float STEP_X = 0.000001f;
+const float STEP_Y = 0.01f;
+const float STEP_Z = 0.00f;
+const int MAX_STEP = 100;
+
 class Node {
 public:
 	Node *parent;
 	Tree *tree;
 	std::vector<Node> children;
-	float _x;
-	float _y;
-	float _z;
-	float _height;
-	float _width;
-	float _length;
-	float _phi;
-	float _theta;
+	int step;
 	bool isLeaf;
+	float x;
+	float y;
+	float z;
+	float scale_x;
+	float scale_y;
+	float scale_z;
+	float phi;
+	float theta;
 	
-	Node(Tree *tr, float x, float y, float z, float h = 0.0f, float w = 0.0f, 
-	 float l = 0.0f, float p = 0.0f, 
-	 float t = 0.0f, Node *parent = 0, bool Leaf = false);
+	Node(Tree *tr, bool Leaf = false, float _x, float _y, float _z, float s_x = SCALE_X, float s_y = SCALE_Y, 
+	 float s_z = SCALE_Z, float p = 0.0f, 
+	 float t = 0.0f, Node *parent = 0);
 
 	void grow();
 	void draw();
+	void addChildren();
 
 };
 

@@ -30,16 +30,12 @@ const unsigned int MAX_LEAVES = 500;
 const float ROOT_TRANS_X = 0.0f;
 const float ROOT_TRANS_Y = -5.0f;
 const float ROOT_TRANS_Z = 0.0f;
-const float SCALE_X = 0.03f;
-const float SCALE_Y = 1.0f;
-const float SCALE_Z = 0.03;
+
 
 class Node;
 
 class Tree {
 	Node *root;
-	Branch *_pBranch;
-	Leaf *_pLeaf;
 	unsigned int branches, leaves;
 	ShaderProgram shaderProgram;
 	Branch* pBranch;
@@ -61,6 +57,18 @@ public:
 	void reshape(int width, int height);
 	void keyboard(unsigned char key, int mx, int my);
 	void mouse(int button, int mode,int posx, int posy);
+	void incBranches() {
+		branches++;
+	}
+	void incLeaves() {
+		leaves++;
+	}
+	bool canAddBranch() {
+		return (branches < MAX_BRANCHES);
+	}
+	bool canAddLeaf() {
+		return (leaves < MAX_LEAVES);
+	}
 };
 
 #endif

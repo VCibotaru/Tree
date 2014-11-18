@@ -22,10 +22,10 @@ void Branch::initData()
 		delete[] pIndices;
 	}
 
-	unsigned int radialStep = 10;
-	unsigned int heightStep = 10;
-	float conRadius = 2.0f;
-	float conHeight = 1.0f;
+	unsigned int radialStep = 20;
+	unsigned int heightStep = 20;
+	float conRadius = 1.0f;
+	float conHeight = 2.0f;
 
 	//number of points
 	dataCount = (radialStep+1)*heightStep+2; 

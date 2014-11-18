@@ -101,9 +101,9 @@ void Tree::drawNode(Node &node) {
 
 	glm::mat4x4 modelMatrix = glm::mat4();
 
-	modelMatrix= glm::translate(modelMatrix,glm::vec3(node._x, node._y, node._y));
- //modelMatrix = glm::rotate(modelMatrix,45.0f,glm::vec3(0.0f,0.0f,1.0f));
-	modelMatrix = glm::scale(modelMatrix,glm::vec3(SCALE_X, SCALE_Y, SCALE_Z));
+	modelMatrix= glm::translate(modelMatrix,glm::vec3(node.x, node.y, node.y));
+ 	//modelMatrix = glm::rotate(modelMatrix,45.0f,glm::vec3(0.0f,0.0f,1.0f));
+	modelMatrix = glm::scale(modelMatrix,glm::vec3(node.scale_x, node.scale_y, node.scale_z));
 
 
   //modelViewMatrix consists of viewMatrix and modelMatrix
@@ -122,6 +122,7 @@ void Tree::drawNode(Node &node) {
 	glUniformMatrix4fv(locP,1,0,glm::value_ptr(modelViewProjectionMatrix));
 	glUniform1ui(texLoc,0);
 	glUniform1i(locFlag,useTexture);
+
 	if (node.isLeaf) {
 		pLeaf->draw();
 	}
