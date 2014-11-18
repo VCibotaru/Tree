@@ -19,7 +19,9 @@ public:
 	Node *parent;
 	Tree *tree;
 	std::vector<Node> children;
+	std::vector<bool> slotBusy;
 	int step;
+	int slot;
 	bool isLeaf;
 	float x;
 	float y;
@@ -30,14 +32,14 @@ public:
 	float phi;
 	float theta;
 	
-	Node(Tree *tr, bool Leaf = false, float _x, float _y, float _z, float s_x = SCALE_X, float s_y = SCALE_Y, 
+	Node(Tree *tr, bool Leaf, float _x, float _y, float _z, float s_x = SCALE_X, float s_y = SCALE_Y, 
 	 float s_z = SCALE_Z, float p = 0.0f, 
 	 float t = 0.0f, Node *parent = 0);
 
 	void grow();
 	void draw();
 	void addChildren();
-
+	int findFreeSlot();
 };
 
 #endif

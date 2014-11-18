@@ -1,12 +1,14 @@
 #include "tree.h"
 #include "node.h"
-
+#include <stdlib.h> 
+#include <time.h>
 
 char VertexShaderName[] = "Vertex.vert";
 char FragmentShaderName[] = "Fragment.frag";
 
 void Tree::init() {
-	root = new Node(this, ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z);
+	srand(time(NULL));
+	root = new Node(this, false, ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z);
 	useTexture = true;
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -102,7 +104,8 @@ void Tree::drawNode(Node &node) {
 	glm::mat4x4 modelMatrix = glm::mat4();
 
 	modelMatrix= glm::translate(modelMatrix,glm::vec3(node.x, node.y, node.y));
- 	//modelMatrix = glm::rotate(modelMatrix,45.0f,glm::vec3(0.0f,0.0f,1.0f));
+ 	modelMatrix = glm::rotate(modelMatrix, node.phi, glm::vec3(0.0f,0.0f,1.0f));
+ 	//modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(1.0f,0.0f,1.0f));
 	modelMatrix = glm::scale(modelMatrix,glm::vec3(node.scale_x, node.scale_y, node.scale_z));
 
 

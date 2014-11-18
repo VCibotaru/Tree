@@ -2,8 +2,9 @@
 #include "MyObject.h"
 
 //branch of tree is cylinder
+
 class Branch :
-	public MyObject
+public MyObject
 {
 public:
 	Branch(void);
