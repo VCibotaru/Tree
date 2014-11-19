@@ -109,8 +109,8 @@ void Tree::drawNode(Node &node) {
 	glm::mat4x4 modelMatrix = glm::mat4();
 
 	modelMatrix = glm::translate(modelMatrix,glm::vec3(node.x, node.y, node.z));
+ 	modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(0.0f, 1.0f, 0.0f));
  	modelMatrix = glm::rotate(modelMatrix, node.phi, glm::vec3(0.0f, 0.0f, 1.0f));
- 	modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(1.0f, 0.0f, 1.0f));
 	modelMatrix = glm::scale(modelMatrix,glm::vec3(node.scale_x, node.scale_y, node.scale_z));
 
 
@@ -132,6 +132,7 @@ void Tree::drawNode(Node &node) {
 	glUniform1i(locFlag,useTexture);
 
 	if (node.isLeaf) {
+		std::cout << "Leaf added" << std::endl;
 		pLeaf->draw();
 	}
 	else {

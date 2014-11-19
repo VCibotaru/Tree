@@ -25,7 +25,7 @@ void Branch::initData()
 	unsigned int radialStep = 20;
 	unsigned int heightStep = 20;
 	float conRadius = 1.0f;
-	float conHeight = 2.0f;
+	float conHeight = 1.0f;
 
 	//number of points
 	dataCount = (radialStep+1)*heightStep+2; 
