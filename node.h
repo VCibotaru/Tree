@@ -10,9 +10,9 @@ const float SCALE_X = 0.01f;
 const float SCALE_Y = 1.0f;
 const float SCALE_Z = 0.01f;
 const float STEP_X = 0.000001f;
-const float STEP_Y = 0.04f;
+const float STEP_Y = 0.0001f;
 const float STEP_Z = 0.00f;
-const int MAX_STEP = 100;
+const int MAX_STEP = 50;
 
 class Node {
 public:
@@ -42,6 +42,7 @@ public:
 	int findFreeSlot();
 	int getRandomPhi();
 	int getRandomTheta();
+	glm::vec4 getBranchEnd();
 };
 
 #endif

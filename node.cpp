@@ -63,17 +63,23 @@ void Node::addChildren() {
 	if (curSlot < 0) {
 		return;
 	}
-	float self_length = 2.0f;
-	float slot_length = self_length / MAX_SLOTS;
+	//float self_length = 2.0f;
+	//float slot_length = self_length / MAX_SLOTS;
 	float newPhi = getRandomPhi();
 	float newTheta = getRandomTheta();
-	float t = slot_length * (curSlot + 0.5f);
+	float t = curSlot * 1.0f / MAX_SLOTS + 0.1f; //slot_length * (curSlot + 0.5f);
 /*	float newX = slot_length * sin(phi) * cos(theta) * (curSlot + 1/2);
 	float newY = slot_length * sin(phi) * sin(theta) * (curSlot + 1/2);
 	float newZ = slot_length * cos(phi) * (curSlot + 1/2);*/
-	float newX = 
-	std::cout << newX << " " << newY << std::endl;
-	Node child(tree, curSlot, std::max(max_step - 40, 10), leaf, x + newX, y + newY, z + newZ, scale_x / 2, scale_y / 2, scale_z / 2, newPhi, newTheta, this);
+	glm::vec4 end = getBranchEnd();
+	float newX = x + t * (end.x - x);
+	float newY = y + t * (end.y - y);
+	float newZ = z + t * (end.z - z);
+	std::cout << t << std::endl;
+	std::cout << x << " " << y << " " << z << " " << std::endl;
+	std::cout << end.x << " " << end.y << " " << end.z << " " << std::endl;
+	std::cout << newX << " " << newY << " " << newZ << " " << std::endl;
+	Node child(tree, curSlot, std::max(max_step / 2, 10), leaf, newX, newY, newZ, scale_x / 2, scale_y / 4, scale_z / 2, newPhi, newTheta, this);
 	children.push_back(child);
 	slotBusy[curSlot] = true;
 }
@@ -96,7 +102,7 @@ int Node::getRandomPhi() {
 		int sign = rand() % 2;
 		int angle = rand() % 180;
 		angle = (sign) ? -angle : angle;
-		if (angle + phi > 0 && angle + phi < 60) {
+		if (angle + phi > -120 && angle + phi < 120) {
 			return angle;
 		}
 	}
@@ -106,3 +112,13 @@ int Node::getRandomTheta() {
 	return rand() % 360;
 }
 
+glm::vec4 Node::getBranchEnd() {
+	glm::mat4x4 modelMatrix = glm::mat4();
+
+	modelMatrix = glm::translate(modelMatrix,glm::vec3(x, y, z));
+ 	modelMatrix = glm::rotate(modelMatrix, theta, glm::vec3(0.0f, 0.0f, 1.0f));
+ 	modelMatrix = glm::rotate(modelMatrix, phi, glm::vec3(1.0f, 0.0f, 1.0f));
+	modelMatrix = glm::scale(modelMatrix,glm::vec3(scale_x, scale_y, scale_z));
+
+	return modelMatrix * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+}
