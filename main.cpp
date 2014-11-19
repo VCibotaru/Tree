@@ -32,12 +32,13 @@ void reshape(int width, int height) {
 
 void display()
 {
-
+  tree.mTime = glutGet(GLUT_ELAPSED_TIME) - tree.cTime;
+  tree.cTime = glutGet(GLUT_ELAPSED_TIME);
+  tree.drawNodes();
 }
 
 void timerFunc(int data) {
   tree.grow();
-  tree.drawNodes();
   glutPostRedisplay();
   glutTimerFunc(100, timerFunc, 1);
 }
@@ -65,6 +66,10 @@ void mouse(int button, int mode,int posx, int posy)
 {
   tree.mouse(button, mode, posx, posy);
 	
+}
+
+void passiveMouse(int posx, int posy) {
+  tree.passiveMouse(posx, posy);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -96,6 +101,7 @@ int main (int argc, char* argv[])
   glutIdleFunc(update);
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
+  glutPassiveMotionFunc(passiveMouse);
   glutTimerFunc(100, timerFunc, 0);
 
   glewInit();

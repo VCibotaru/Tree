@@ -33,7 +33,6 @@ parent(_parent)
 		initialMatrix = glm::translate(initialMatrix, glm::vec3(ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z));
 	}
 	else {
-		std::cout << height << std::endl;
 		glm::vec4 tr = _parent->getModelMatrix() * glm::vec4(0.0f, height, 0.0f, 1.0f);
 		initialMatrix = glm::translate(initialMatrix, glm::vec3(tr.x, tr.y, tr.z));
 	}
@@ -51,7 +50,7 @@ void Node::grow() {
 		scale_x += STEP_X; 
 		scale_y += STEP_Y;
 		scale_z += STEP_Z;
-		//modelMatrix = glm::scale(initialMatrix, glm::vec3(scale_x, scale_y, scale_z));
+		modelMatrix = glm::scale(initialMatrix, glm::vec3(scale_x, scale_y, scale_z));
 	}
 	for (unsigned i = 0 ; i < children.size() ; ++i) {
 		children[i].grow();
@@ -80,12 +79,12 @@ void Node::addChildren() {
 		children.push_back(child);
 		slotBusy[curSlot] = true;
 	}
-	/*else {
+	else {
 		const float LEAF_SCALE = 0.02f;
 		Node child(tree, curSlot, max_step, true, LEAF_SCALE, LEAF_SCALE, LEAF_SCALE, newPhi, newTheta, t, this);
 		children.push_back(child);
 		slotBusy[curSlot] = true;
-	}*/
+	}
 }
 
 int Node::findFreeSlot() {

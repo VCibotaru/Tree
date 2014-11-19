@@ -25,11 +25,12 @@
 //functions for shader compilation and linking
 #include "shaderhelper.h"
 
-const unsigned int MAX_BRANCHES = 10;
+const unsigned int MAX_BRANCHES = 2000;
 const unsigned int MAX_LEAVES = 5000;
 const float ROOT_TRANS_X = 0.0f;
 const float ROOT_TRANS_Y = 0.0f;
 const float ROOT_TRANS_Z = 0.0f;
+const int SWINGS = 10;
 
 
 class Node;
@@ -47,11 +48,18 @@ class Tree {
 	glm::vec3 eye;
 	glm::vec3 cen;
 	glm::vec3 up;
+	glm::vec3 dir;
+	glm::vec3 rDir;
 	float phi, theta, radius;
+	float h, v;
+	bool swing;
+	unsigned int currentSwing;
 
 public:
 	int windowWidth;
 	int windowHeight;
+	int mTime;
+	int cTime;
 	~Tree();
 	void grow();
 	void drawNodes();
@@ -62,6 +70,7 @@ public:
 	void reshape(int width, int height);
 	void keyboard(unsigned char key, int mx, int my);
 	void mouse(int button, int mode,int posx, int posy);
+	void passiveMouse(int posx, int posy);
 	void incBranches() {
 		branches++;
 	}

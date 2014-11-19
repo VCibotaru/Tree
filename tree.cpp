@@ -2,8 +2,9 @@
 #include "node.h"
 
 
-const float THETA_INC = 0.3f;
-const float PHI_INC = 0.3f;
+const float THETA_INC = M_PI / 10.0f;
+const float PHI_INC = M_PI / 10.0f;
+
 Tree::~Tree() {
 	delete pBranch;
 	delete pLeaf;
@@ -14,6 +15,13 @@ Tree::~Tree() {
 void Tree::drawNodes() {
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	if (swing) {
+		static int direction = 1;
+		currentSwing += direction;
+		if (currentSwing == -SWINGS || currentSwing == SWINGS ) {
+			direction = -direction;
+		}
+	}
 	root->draw();
 	glutSwapBuffers();
 }
@@ -26,19 +34,32 @@ void Tree::keyboard(unsigned char key, int mx, int my)
 {
 	if (key==' ') {
 		useTexture = !useTexture;
+		return;
+	}
+	if (key == 'e') {
+		if (radius > 0.5f) {
+			radius -= 0.5f;
+			eye = cen + radius * glm::normalize(eye - cen);
+		}
+		return;
+	}
+	if (key == 'q') {
+		radius += 0.5f;
+		eye = cen + radius * glm::normalize(eye - cen);
+		return;
 	}
 	switch (key) {
 		case 'w':
+			if (theta - THETA_INC < - M_PI / 2) {
+				return;
+			}
 			theta -= THETA_INC;
 		break;
 		case 's':
+			if (theta + THETA_INC > M_PI / 2) {
+				return;
+			}
 			theta += THETA_INC;
-		break;
-		case 'q':
-			radius -= 1;
-		break;
-		case 'e':
-			radius += 1;
 		break;
 		case 'a':
 			phi -= PHI_INC;	
@@ -47,34 +68,67 @@ void Tree::keyboard(unsigned char key, int mx, int my)
 			phi += PHI_INC;	
 		break;
 	}
-	radius = (radius < 1) ? 1 : radius;
-	/*theta = (theta < 0)    ? M_PI : theta;
-	theta = (theta > M_PI) ? 0    : theta;
-	phi = (phi < 0)        ? 2 * M_PI : phi;
-	phi = (phi > 2 * M_PI) ? 0        : phi;*/
-
 	
-	float eyeX = radius * sin(phi);
-	float eyeY = radius * sin(theta);
-	float eyeZ = radius * cos(phi) * cos(theta);
+	float eyeX = cen.x + radius * sin(phi);
+	float eyeY = cen.y + radius * sin(theta);
+	float eyeZ = cen.z + radius * cos(phi) * cos(theta);
 	eye = glm::vec3(eyeX, eyeY, eyeZ);
 
 }
-void Tree::mouse(int button, int mode,int posx, int posy)
+void Tree::mouse(int button, int mode, int posx, int posy)
 {
-	if (button==GLUT_LEFT_BUTTON)
-	{
-		if (mode == GLUT_DOWN)
-		{
-			mouseX = posx; mouseY = posy;
+	if (button==GLUT_LEFT_BUTTON) {
+		if (mode == GLUT_DOWN) {
+			if (radius > 2.0f) {
+				radius -= 2.0f;
+				eye -= 2.0f * glm::normalize(eye - cen);
+			}
 		}
-		else
-		{
+		else {
 			mouseX = -1; mouseY = -1;
 		}
 	}
-	
+
+	if (button == GLUT_RIGHT_BUTTON) {
+		if (mode == GLUT_DOWN) {
+			radius += 2.0f;
+			eye += 2.0f * glm::normalize(eye - cen);
+		}
+		else {
+			mouseX = -1; mouseY = -1;
+		}
+	}
 }
+
+void Tree::passiveMouse(int posx, int posy)
+{
+	dir = glm::normalize(cen - eye);
+	rDir = glm::cross(dir, up);
+	h = float(glutGet(GLUT_WINDOW_WIDTH) / 2 - posx) * 0.0003 * mTime;
+	float vOffset = float(glutGet(GLUT_WINDOW_HEIGHT) / 2 - posy) * 0.0003 * mTime;
+	if (v + vOffset > 0 && v + vOffset < 45.0f) {
+		v += vOffset;
+	} else {
+		vOffset = 0.0f;
+	}
+
+	glm::mat4 rotationMat(1);
+	rotationMat = glm::rotate(rotationMat, h, up);
+	dir = glm::vec3(rotationMat * glm::vec4(dir, 1.0));
+	rDir = glm::vec3(rotationMat * glm::vec4(rDir, 1.0));
+
+	rotationMat = glm::mat4(1);
+	rotationMat = glm::rotate(rotationMat, vOffset, rDir);
+	dir = glm::vec3(rotationMat * glm::vec4(dir, 1.0));
+
+	if ((radius * glm::normalize(dir) + eye).y > 0) {
+		cen = radius * glm::normalize(dir) + eye;
+	}
+	radius = sqrt((cen.x - eye.x) * (cen.x - eye.x) + (cen.y - eye.y) * (cen.y - eye.y) + (cen.z - eye.z) * (cen.z - eye.z));
+	mouseX = posx;
+	mouseY = posy;
+}
+
 
 
 
