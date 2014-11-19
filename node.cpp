@@ -54,10 +54,6 @@ void Node::draw() {
 }
 
 void Node::addChildren() {
-	if (!tree->canAddBranch() && !tree->canAddLeaf()) {
-		return;
-	}
-	bool leaf = !tree->canAddBranch();
 	int curSlot = findFreeSlot();
 	if (curSlot < 0) {
 		return;
@@ -66,9 +62,17 @@ void Node::addChildren() {
 	float newTheta = getRandomTheta();
 	float t = curSlot * 1.0f / (MAX_SLOTS + 1) + 0.1f;
 	glm::vec4 end = getBranchEnd(t);
-	Node child(tree, curSlot, max_step, leaf, end.x, end.y, end.z, scale_x / 2, scale_y / 2, scale_z / 2, newPhi, newTheta, this);
-	children.push_back(child);
-	slotBusy[curSlot] = true;
+	if (tree->canAddBranch()) {
+		Node child(tree, curSlot, max_step, false, end.x, end.y, end.z, scale_x / 2, scale_y / 2, scale_z / 2, newPhi, newTheta, this);
+		children.push_back(child);
+		slotBusy[curSlot] = true;
+	}
+	else {
+		const float LEAF_SCALE = 0.02f;
+		Node child(tree, curSlot, max_step, true, end.x, end.y, end.z, LEAF_SCALE, LEAF_SCALE, LEAF_SCALE, newPhi, newTheta, this);
+		children.push_back(child);
+		slotBusy[curSlot] = true;
+	}
 }
 
 int Node::findFreeSlot() {
@@ -105,8 +109,8 @@ glm::vec4 Node::getBranchEnd(float t) {
 	glm::mat4x4 modelMatrix = glm::mat4();
 
 	modelMatrix = glm::translate(modelMatrix,glm::vec3(x, y, z));
- 	modelMatrix = glm::rotate(modelMatrix, theta, glm::vec3(0.0f, 1.0f, 0.0f));
- 	modelMatrix = glm::rotate(modelMatrix, phi, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelMatrix = glm::rotate(modelMatrix, theta, glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix = glm::rotate(modelMatrix, phi, glm::vec3(0.0f, 0.0f, 1.0f));
 	modelMatrix = glm::scale(modelMatrix,glm::vec3(scale_x, scale_y, scale_z));
 
 	return modelMatrix * glm::vec4(0.0f, t, 0.0f, 1.0f);

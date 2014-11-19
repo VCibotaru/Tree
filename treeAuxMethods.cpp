@@ -47,7 +47,7 @@ void Tree::init() {
 void Tree::initTexture()
 {
     //generate as many textures as you need
-	glGenTextures(1,&texId[0]);
+	glGenTextures(2, &texId[0]);
 	
     //enable texturing and zero slot
 	glActiveTexture(GL_TEXTURE0);
@@ -73,6 +73,25 @@ void Tree::initTexture()
 
 	//set Texture Data
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2,2, 0, GL_RGB, GL_UNSIGNED_BYTE, &imgData[0]);
+
+	glBindTexture(GL_TEXTURE_2D, texId[1]);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	// Set nearest filtering mode for texture minification
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	//TODO: load texture from file
+	GLubyte imgData2[2 * 2 * 3] = {
+		190, 100, 30, 150, 50, 15,
+		100, 22, 0, 45, 10, 0
+	};
+
+	//set Texture Data
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_UNSIGNED_BYTE, &imgData2[0]);
 }
 
 void Tree::drawNode(Node &node) {
@@ -109,8 +128,8 @@ void Tree::drawNode(Node &node) {
 	glm::mat4x4 modelMatrix = glm::mat4();
 
 	modelMatrix = glm::translate(modelMatrix,glm::vec3(node.x, node.y, node.z));
- 	modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(0.0f, 1.0f, 0.0f));
- 	modelMatrix = glm::rotate(modelMatrix, node.phi, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix = glm::rotate(modelMatrix, node.phi, glm::vec3(0.0f, 0.0f, 1.0f));
 	modelMatrix = glm::scale(modelMatrix,glm::vec3(node.scale_x, node.scale_y, node.scale_z));
 
 
@@ -122,7 +141,8 @@ void Tree::drawNode(Node &node) {
 	modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
 
   //bind texture
-	glBindTexture(GL_TEXTURE_2D,texId[0]);
+	unsigned index = (node.isLeaf) ? 0 : 1;
+	glBindTexture(GL_TEXTURE_2D,texId[index]);
 
   //pass variables to the shaders
 	glUniformMatrix4fv(locMV,1,0,glm::value_ptr(modelViewMatrix));
@@ -132,7 +152,6 @@ void Tree::drawNode(Node &node) {
 	glUniform1i(locFlag,useTexture);
 
 	if (node.isLeaf) {
-		std::cout << "Leaf added" << std::endl;
 		pLeaf->draw();
 	}
 	else {
@@ -142,15 +161,15 @@ void Tree::drawNode(Node &node) {
 
 void Tree::reshape(int width, int height)
 {
-  windowWidth = width;
-  windowHeight = height;
+	windowWidth = width;
+	windowHeight = height;
   //set viewport to match window size
-  glViewport(0, 0, width, height);
-  
-  float fieldOfView = 45.0f;
-  float aspectRatio = float(width)/float(height);
-  float zNear = 0.1f;
-  float zFar = 100.0f;
+	glViewport(0, 0, width, height);
+
+	float fieldOfView = 45.0f;
+	float aspectRatio = float(width)/float(height);
+	float zNear = 0.1f;
+	float zFar = 100.0f;
   //set projection matrix
-  projectionMatrix = glm::perspective(fieldOfView,aspectRatio,zNear,zFar);
+	projectionMatrix = glm::perspective(fieldOfView,aspectRatio,zNear,zFar);
 }

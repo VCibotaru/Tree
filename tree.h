@@ -25,8 +25,8 @@
 //functions for shader compilation and linking
 #include "shaderhelper.h"
 
-const unsigned int MAX_BRANCHES = 5000;
-const unsigned int MAX_LEAVES = 500;
+const unsigned int MAX_BRANCHES = 3000;
+const unsigned int MAX_LEAVES = 10000;
 const float ROOT_TRANS_X = 0.0f;
 const float ROOT_TRANS_Y = 0.0f;
 const float ROOT_TRANS_Z = 0.0f;
@@ -41,7 +41,7 @@ class Tree {
 	Branch* pBranch;
 	Leaf* pLeaf;
 	bool useTexture;
-	GLuint texId[1];
+	GLuint texId[2];
 	glm::mat4x4 projectionMatrix;
 	int mouseX, mouseY;
 	glm::vec3 eye;
@@ -70,9 +70,6 @@ public:
 	}
 	bool canAddBranch() {
 		return (branches < MAX_BRANCHES);
-	}
-	bool canAddLeaf() {
-		return (leaves < MAX_LEAVES);
 	}
 };
 

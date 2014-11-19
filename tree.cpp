@@ -8,7 +8,7 @@ Tree::~Tree() {
 	delete pBranch;
 	delete pLeaf;
 	delete root;
-	glDeleteTextures(1,texId);
+	glDeleteTextures(2, texId);
 }
 
 void Tree::drawNodes() {
