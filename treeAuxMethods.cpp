@@ -3,13 +3,23 @@
 #include <stdlib.h> 
 #include <time.h>
 
+#define MAGIC_CONST 1
+
 char VertexShaderName[] = "Vertex.vert";
 char FragmentShaderName[] = "Fragment.frag";
 
 void Tree::init() {
-	srand(time(NULL));
-	root = new Node(this, false, ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z);
+	srand(MAGIC_CONST);
+	root = new Node(this, -1, MAX_STEP, false, ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z);
+	
 	useTexture = true;
+	phi = theta = 0;
+	radius = 10;
+
+	eye = glm::vec3(0, 0, radius);
+	cen = glm::vec3(0, 0, 0);
+	up =  glm::vec3(0, 1, 0);
+
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glDepthMask(GL_TRUE);
@@ -66,11 +76,6 @@ void Tree::initTexture()
 }
 
 void Tree::drawNode(Node &node) {
-	glm::vec3 eye(0,0,10);
-	glm::vec3 cen(0.0,0,0);
-	glm::vec3 up(0,1,0);
-	glClearColor(0,0,0,0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
   //Draw triangle with shaders (in screen coordinates)
   //need to set uniform in modelViewMatrix
@@ -103,9 +108,9 @@ void Tree::drawNode(Node &node) {
 
 	glm::mat4x4 modelMatrix = glm::mat4();
 
-	modelMatrix= glm::translate(modelMatrix,glm::vec3(node.x, node.y, node.y));
- 	modelMatrix = glm::rotate(modelMatrix, node.phi, glm::vec3(0.0f,0.0f,1.0f));
- 	//modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(1.0f,0.0f,1.0f));
+	modelMatrix = glm::translate(modelMatrix,glm::vec3(node.x, node.y, node.z));
+ 	modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(0.0f, 0.0f, 1.0f));
+ 	modelMatrix = glm::rotate(modelMatrix, node.phi, glm::vec3(1.0f, 0.0f, 1.0f));
 	modelMatrix = glm::scale(modelMatrix,glm::vec3(node.scale_x, node.scale_y, node.scale_z));
 
 
@@ -132,7 +137,6 @@ void Tree::drawNode(Node &node) {
 	else {
 		pBranch->draw();
 	}
-	glutSwapBuffers();
 }
 
 void Tree::reshape(int width, int height)

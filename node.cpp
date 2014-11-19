@@ -6,11 +6,12 @@
 #define MAX_SLOTS 5
 
 
-Node::Node(Tree *tr, bool Leaf, float _x, float _y, float _z, float s_x, float s_y, float s_z, float p, float t, Node *parent):
+Node::Node(Tree *tr, int _s, int _m_s, bool Leaf, float _x, float _y, float _z, float s_x, float s_y, float s_z, float p, float t, Node *parent):
 tree(tr),
 slotBusy(MAX_SLOTS, false),
 step(0),
-slot(-1),
+slot(_s),
+max_step(_m_s),
 isLeaf(Leaf),
 x(_x),
 y(_y),
@@ -33,15 +34,14 @@ void Node::grow() {
 	if (isLeaf) {
 		return;
 	}
-	if (step < MAX_STEP) {
+	if (step < max_step) {
 		step++;
 		scale_x += STEP_X; 
 		scale_y += STEP_Y;
 		scale_z += STEP_Z;
 	}
-	for (Node child : children) {
-		std::cout << child.y << std::endl;
-		child.grow();
+	for (unsigned i = 0 ; i < children.size() ; ++i) {
+		children[i].grow();
 	}
 	addChildren();
 
@@ -49,30 +49,33 @@ void Node::grow() {
 
 void Node::draw() {
 	tree->drawNode(*this);
-	for (Node child : children) {
-		child.draw();
+	for (unsigned i = 0 ; i < children.size() ; ++i) {
+		children[i].draw();
 	}
 }
 
 void Node::addChildren() {
-	if (!tree->canAddBranch()) {
+	if (!tree->canAddBranch()){// && !tree->canAddLeaf()) {
 		return;
 	}
-	std::cout << "Adding children" << std::endl;
+	bool leaf = false;
 	int curSlot = findFreeSlot();
 	if (curSlot < 0) {
-		//all slots are busy
 		return;
 	}
-	std::cout << "Slot found " << curSlot << std::endl;
 	float self_length = 2.0f;
 	float slot_length = self_length / MAX_SLOTS;
-	//grow new branch at half of needed slot
-	float newY = curSlot * slot_length + slot_length / 2;
-	std::cout << "New child at: " << x << " " << newY + y << " " << z << std::endl; 
-	Node child(tree, false, x, y + newY, z, SCALE_X, SCALE_Y, SCALE_Z, 45.0f, 0.0f, this);
+	float newPhi = getRandomPhi();
+	float newTheta = getRandomTheta();
+	float t = slot_length * (curSlot + 0.5f);
+/*	float newX = slot_length * sin(phi) * cos(theta) * (curSlot + 1/2);
+	float newY = slot_length * sin(phi) * sin(theta) * (curSlot + 1/2);
+	float newZ = slot_length * cos(phi) * (curSlot + 1/2);*/
+	float newX = 
+	std::cout << newX << " " << newY << std::endl;
+	Node child(tree, curSlot, std::max(max_step - 40, 10), leaf, x + newX, y + newY, z + newZ, scale_x / 2, scale_y / 2, scale_z / 2, newPhi, newTheta, this);
 	children.push_back(child);
-	std::cout << "Child pushed" << std::endl;
+	slotBusy[curSlot] = true;
 }
 
 int Node::findFreeSlot() {
@@ -86,5 +89,20 @@ int Node::findFreeSlot() {
 			return slot;
 		}
 	}
+}
+
+int Node::getRandomPhi() {
+	while (1) {
+		int sign = rand() % 2;
+		int angle = rand() % 180;
+		angle = (sign) ? -angle : angle;
+		if (angle + phi > 0 && angle + phi < 60) {
+			return angle;
+		}
+	}
+}
+
+int Node::getRandomTheta() {
+	return rand() % 360;
 }
 

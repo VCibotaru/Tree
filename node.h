@@ -8,9 +8,9 @@ class Tree;
 
 const float SCALE_X = 0.01f;
 const float SCALE_Y = 1.0f;
-const float SCALE_Z = 0.03f;
+const float SCALE_Z = 0.01f;
 const float STEP_X = 0.000001f;
-const float STEP_Y = 0.01f;
+const float STEP_Y = 0.04f;
 const float STEP_Z = 0.00f;
 const int MAX_STEP = 100;
 
@@ -22,6 +22,7 @@ public:
 	std::vector<bool> slotBusy;
 	int step;
 	int slot;
+	int max_step;
 	bool isLeaf;
 	float x;
 	float y;
@@ -31,8 +32,7 @@ public:
 	float scale_z;
 	float phi;
 	float theta;
-	
-	Node(Tree *tr, bool Leaf, float _x, float _y, float _z, float s_x = SCALE_X, float s_y = SCALE_Y, 
+	Node(Tree *tr, int _s, int _m_s, bool Leaf, float _x, float _y, float _z, float s_x = SCALE_X, float s_y = SCALE_Y, 
 	 float s_z = SCALE_Z, float p = 0.0f, 
 	 float t = 0.0f, Node *parent = 0);
 
@@ -40,6 +40,8 @@ public:
 	void draw();
 	void addChildren();
 	int findFreeSlot();
+	int getRandomPhi();
+	int getRandomTheta();
 };
 
 #endif

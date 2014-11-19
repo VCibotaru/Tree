@@ -25,10 +25,10 @@
 //functions for shader compilation and linking
 #include "shaderhelper.h"
 
-const unsigned int MAX_BRANCHES = 4;
+const unsigned int MAX_BRANCHES = 10;
 const unsigned int MAX_LEAVES = 500;
 const float ROOT_TRANS_X = 0.0f;
-const float ROOT_TRANS_Y = -5.0f;
+const float ROOT_TRANS_Y = 0.0f;
 const float ROOT_TRANS_Z = 0.0f;
 
 
@@ -44,6 +44,11 @@ class Tree {
 	GLuint texId[1];
 	glm::mat4x4 projectionMatrix;
 	int mouseX, mouseY;
+	glm::vec3 eye;
+	glm::vec3 cen;
+	glm::vec3 up;
+	float phi, theta, radius;
+
 public:
 	int windowWidth;
 	int windowHeight;

@@ -94,7 +94,7 @@ void Leaf::initData()
 			
 		pData[startIndex+i].pos = glm::vec3(0, (yPos+1)/2,0);
 		pData[startIndex+i].nor = glm::vec3(0,0,-1);
-		pData[startIndex+i].tex = glm::vec2(0.5f,0.5f);		
+		pData[startIndex+i].tex = glm::vec2(0.5f,(yPos+1)/2);
 	}
 	//center down
 	startIndex += nInternalQuaterSteps+1;
@@ -105,7 +105,7 @@ void Leaf::initData()
 			
 		pData[startIndex+i].pos = glm::vec3(0, (yPos+1)/2,0);
 		pData[startIndex+i].nor = glm::vec3(0,0,-1);
-		pData[startIndex+i].tex = glm::vec2(0.5f,0.5f);		
+		pData[startIndex+i].tex = glm::vec2(0.5f,(yPos+1)/2);		
 	}
 	startIndex += nInternalQuaterSteps;
 
