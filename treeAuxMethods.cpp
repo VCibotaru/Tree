@@ -10,7 +10,7 @@ char FragmentShaderName[] = "Fragment.frag";
 
 void Tree::init() {
 	srand(MAGIC_CONST);
-	root = new Node(this, -1, MAX_STEP, false);
+	root = new Node(this, -1, MAX_STEP, false, ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z);
 	
 	useTexture = true;
 	phi = theta = 0;
