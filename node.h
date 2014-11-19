@@ -31,6 +31,7 @@ public:
 	float height;
 	Node *parent;
 	glm::mat4x4 modelMatrix;
+	glm::mat4x4 initialMatrix;
 	Node(Tree *tr, int _s, int _m_s, bool Leaf, float s_x = SCALE_X, float s_y = SCALE_Y, 
 	 float s_z = SCALE_Z, float p = 0.0f, 
 	 float t = 0.0f, float h = 0.0f, Node *_parent = 0);

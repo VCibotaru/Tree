@@ -25,7 +25,7 @@ void Branch::initData()
 	unsigned int radialStep = 20;
 	unsigned int heightStep = 20;
 	float conHeight = 1.0f;
-	float minR = 1.2f;
+	float minR = 1.f;
 	float maxR = 3.0f;
 	float delta = maxR - minR;
 
@@ -54,7 +54,7 @@ void Branch::initData()
 			float xPos = cos(fi);
 			float yPos = sin(fi);
 
-			pData[pointId].pos = glm::vec3(minR + tmp * xPos, zPos, minR + tmp * yPos);
+			pData[pointId].pos = glm::vec3((minR + tmp) * xPos, zPos, (minR + tmp) * yPos);
 			pData[pointId].nor = glm::vec3(xPos, delta / minR ,yPos);
 			pData[pointId].tex = glm::vec2((xPos+1)/2, (yPos+1)/2);		
 		}
