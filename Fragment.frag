@@ -1,15 +1,10 @@
 //shader version
 #version 150 core
 
-//mode of drawing
-//if is true, then use Texture
-//otherwise draw gradient
 uniform int useTexture;
 
-//texture object
 uniform sampler2D textureSampler;
 
-//retrieve this data form vertex shader
 in VertexData
 {
 	vec3 position;
@@ -17,19 +12,32 @@ in VertexData
 	vec2 texcoord;
 } VertexIn;
 
+
+in vec3 fragEye;
+in vec3 lightLocEye;
+in vec3 fragNormal;
+
 out vec4 fragColor;
 
-//TODO: you should use VertexIn.normal value to evaluate Phong Lightning for this pixel
-// 
+const vec4 ka = vec4(0.05, 0.05, 0.05, 1);
+const vec4 ks = vec4(0.4, 0.4, 0.4, 0.4);
+const float ke = 20;
 		
 void main()
 {
+	vec3 light = normalize(lightLocEye - fragEye);
+	vec3 normal = normalize(fragNormal);
+	vec3 eye = normalize(fragEye);
+	vec3 reflection = normalize(reflect(light, normal));
+	float diffuseIntensity = clamp(max(dot(normal, light), -dot(normal, light)), 0.0, 1.0);
+	float specularIntensity = pow(clamp(max(dot(reflection, eye), 0.0), 0.0, 1.0), ke);
+
+	vec4 kd;
 	if (useTexture>0)
-		//take color from texture using texture2D
-		fragColor = vec4(texture(textureSampler,VertexIn.texcoord.xy).rgb,length(VertexIn.normal)*length(VertexIn.position));
+		kd = vec4(texture(textureSampler,VertexIn.texcoord.xy).rgb,length(VertexIn.normal)*length(VertexIn.position));
 	else
 	{
-		//use default color (brown)
-		fragColor = vec4(0.5,0.2,0.1,1);
+		kd = vec4(0.5,0.2,0.1,1);
 	}
+	fragColor = ka + kd * diffuseIntensity + ks * specularIntensity;
 }

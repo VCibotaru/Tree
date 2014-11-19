@@ -9,7 +9,7 @@ class Tree;
 const float SCALE_X = 0.01f;
 const float SCALE_Y = 1.0f;
 const float SCALE_Z = 0.01f;
-const float STEP_X = 0.000001f;
+const float STEP_X = 0.00001f;
 const float STEP_Y = 0.0001f;
 const float STEP_Z = 0.00f;
 const int MAX_STEP = 100;
@@ -43,6 +43,7 @@ public:
 	int getRandomPhi();
 	int getRandomTheta();
 	glm::vec4 getBranchEnd(float t);
+	glm::mat4x4 getModelMatrix();
 };
 
 #endif

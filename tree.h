@@ -26,7 +26,7 @@
 #include "shaderhelper.h"
 
 const unsigned int MAX_BRANCHES = 3000;
-const unsigned int MAX_LEAVES = 10000;
+const unsigned int MAX_LEAVES = 5000;
 const float ROOT_TRANS_X = 0.0f;
 const float ROOT_TRANS_Y = 0.0f;
 const float ROOT_TRANS_Z = 0.0f;

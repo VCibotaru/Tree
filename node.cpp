@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <algorithm> 
 
-#define MAX_SLOTS 10
+#define MAX_SLOTS 9
 
 Node::Node(Tree *tr, int _s, int _m_s, bool Leaf, float _x, float _y, float _z, float s_x, float s_y, float s_z, float p, float t, Node *parent):
 tree(tr),
@@ -106,6 +106,10 @@ int Node::getRandomTheta() {
 }
 
 glm::vec4 Node::getBranchEnd(float t) {
+	return getModelMatrix() * glm::vec4(0.0f, t, 0.0f, 1.0f);
+}
+
+glm::mat4x4 Node::getModelMatrix() {
 	glm::mat4x4 modelMatrix = glm::mat4();
 
 	modelMatrix = glm::translate(modelMatrix,glm::vec3(x, y, z));
@@ -113,5 +117,5 @@ glm::vec4 Node::getBranchEnd(float t) {
 	modelMatrix = glm::rotate(modelMatrix, phi, glm::vec3(0.0f, 0.0f, 1.0f));
 	modelMatrix = glm::scale(modelMatrix,glm::vec3(scale_x, scale_y, scale_z));
 
-	return modelMatrix * glm::vec4(0.0f, t, 0.0f, 1.0f);
+	return modelMatrix;
 }

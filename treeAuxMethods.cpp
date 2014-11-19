@@ -14,7 +14,7 @@ void Tree::init() {
 	
 	useTexture = true;
 	phi = theta = 0;
-	radius = 10;
+	radius = 5;
 
 	eye = glm::vec3(0, 0, radius);
 	cen = glm::vec3(0, 0, 0);
@@ -125,13 +125,7 @@ void Tree::drawNode(Node &node) {
 	glm::mat4x4 modelViewProjectionMatrix;
 	glm::mat4x4 normalMatrix;
 
-	glm::mat4x4 modelMatrix = glm::mat4();
-
-	modelMatrix = glm::translate(modelMatrix,glm::vec3(node.x, node.y, node.z));
-	modelMatrix = glm::rotate(modelMatrix, node.theta, glm::vec3(0.0f, 1.0f, 0.0f));
-	modelMatrix = glm::rotate(modelMatrix, node.phi, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelMatrix = glm::scale(modelMatrix,glm::vec3(node.scale_x, node.scale_y, node.scale_z));
-
+	glm::mat4x4 modelMatrix = node.getModelMatrix();
 
   //modelViewMatrix consists of viewMatrix and modelMatrix
 	modelViewMatrix = viewMatrix*modelMatrix;
