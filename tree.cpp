@@ -16,7 +16,7 @@ void Tree::drawNodes() {
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	if (swing) {
-		root->phi = 1.0f * currentSwing;
+		//root->phi = 1.0f * currentSwing;
 		root->updateModelMatrix();
 	}
 	root->draw();

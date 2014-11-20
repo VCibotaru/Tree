@@ -133,7 +133,7 @@ void Tree::drawNode(Node &node) {
 	glm::mat4x4 modelViewMatrix;
 	glm::mat4x4 modelViewProjectionMatrix;
 	glm::mat4x4 normalMatrix;
-	node.updateModelMatrix();
+
 	glm::mat4x4 modelMatrix = node.getModelMatrix();
   //modelViewMatrix consists of viewMatrix and modelMatrix
 	modelViewMatrix = viewMatrix*modelMatrix;
