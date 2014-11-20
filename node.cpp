@@ -28,7 +28,7 @@ parent(_parent)
 	else {
 		tree->incBranches();
 	}
-	initialMatrix = glm::mat4();
+	/*initialMatrix = glm::mat4();
 	if (!_parent) {
 		initialMatrix = glm::translate(initialMatrix, glm::vec3(ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z));
 	}
@@ -38,7 +38,7 @@ parent(_parent)
 	}
 	initialMatrix = glm::rotate(initialMatrix, theta, glm::vec3(0.0f, 1.0f, 0.0f));
 	initialMatrix = glm::rotate(initialMatrix, phi, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelMatrix = glm::scale(initialMatrix, glm::vec3(scale_x, scale_y, scale_z));
+	modelMatrix = glm::scale(initialMatrix, glm::vec3(scale_x, scale_y, scale_z));*/
 }
 
 void Node::grow() {
@@ -50,7 +50,7 @@ void Node::grow() {
 		scale_x += STEP_X; 
 		scale_y += STEP_Y;
 		scale_z += STEP_Z;
-		modelMatrix = glm::scale(initialMatrix, glm::vec3(scale_x, scale_y, scale_z));
+		//modelMatrix = glm::scale(initialMatrix, glm::vec3(scale_x, scale_y, scale_z));
 	}
 	for (unsigned i = 0 ; i < children.size() ; ++i) {
 		children[i].grow();
@@ -75,13 +75,13 @@ void Node::addChildren() {
 	float newTheta = getRandomTheta();
 	float t = curSlot * 1.0f / (MAX_SLOTS + 1) + 0.1f;
 	if (tree->canAddBranch()) {
-		Node child(tree, curSlot, max_step, false, scale_x / 2, scale_y / 2, scale_z / 2, newPhi, newTheta, t, this);
+		Node child(tree, curSlot, max_step / 2, false, scale_x / 2, scale_y / 2, scale_z / 2, newPhi, newTheta, t, this);
 		children.push_back(child);
 		slotBusy[curSlot] = true;
 	}
 	else {
 		const float LEAF_SCALE = 0.02f;
-		Node child(tree, curSlot, max_step, true, LEAF_SCALE, LEAF_SCALE, LEAF_SCALE, newPhi, newTheta, t, this);
+		Node child(tree, curSlot, max_step / 2, true, LEAF_SCALE, LEAF_SCALE, LEAF_SCALE, newPhi, newTheta, t, this);
 		children.push_back(child);
 		slotBusy[curSlot] = true;
 	}
@@ -117,7 +117,21 @@ int Node::getRandomTheta() {
 	return delta * sector;
 }
 
-glm::vec4 Node::getBranchEnd(float t) {
-	return getModelMatrix() * glm::vec4(0.0f, t, 0.0f, 1.0f);
+
+glm::mat4x4 Node::getModelMatrix() {
+	return modelMatrix;
+}
+void Node::updateModelMatrix() {
+	modelMatrix = glm::mat4();
+	if (!parent) {
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z));
+	}
+	else {
+		glm::vec4 tr = parent->getModelMatrix() * glm::vec4(0.0f, height, 0.0f, 1.0f);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(tr.x, tr.y, tr.z));
+	}
+	modelMatrix = glm::rotate(modelMatrix, theta, glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix = glm::rotate(modelMatrix, phi, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(scale_x, scale_y, scale_z));
 }
 

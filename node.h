@@ -42,11 +42,8 @@ public:
 	int findFreeSlot();
 	int getRandomPhi();
 	int getRandomTheta();
-	glm::vec4 getBranchEnd(float t);
 	void updateModelMatrix();
-	glm::mat4x4 getModelMatrix() {
-		return modelMatrix;
-	}
+	glm::mat4x4 getModelMatrix(); 
 };
 
 #endif
