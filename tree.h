@@ -52,10 +52,10 @@ class Tree {
 	glm::vec3 rDir;
 	float phi, theta, radius;
 	float h, v;
+	bool swing;
+	unsigned int currentSwing;
 
 public:
-	bool swing;
-	int currentSwing;
 	int windowWidth;
 	int windowHeight;
 	int mTime;

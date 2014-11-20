@@ -25,8 +25,8 @@ void Branch::initData()
 	unsigned int radialStep = 20;
 	unsigned int heightStep = 20;
 	float conHeight = 1.0f;
-	float minR = 0.6f;
-	float maxR = 2.0f;
+	float minR = 1.f;
+	float maxR = 3.0f;
 	float delta = maxR - minR;
 
 	//number of points

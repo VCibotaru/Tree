@@ -16,8 +16,11 @@ void Tree::drawNodes() {
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	if (swing) {
-		//root->phi = 1.0f * currentSwing;
-		root->updateModelMatrix();
+		static int direction = 1;
+		currentSwing += direction;
+		if (currentSwing == -SWINGS || currentSwing == SWINGS ) {
+			direction = -direction;
+		}
 	}
 	root->draw();
 	glutSwapBuffers();
@@ -31,11 +34,6 @@ void Tree::keyboard(unsigned char key, int mx, int my)
 {
 	if (key==' ') {
 		useTexture = !useTexture;
-		return;
-	}
-	if (key == 'z') {
-		root->phi = 0.0f;
-		swing = !swing;
 		return;
 	}
 	if (key == 'e') {

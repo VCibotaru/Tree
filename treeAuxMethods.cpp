@@ -9,25 +9,16 @@ char VertexShaderName[] = "Vertex.vert";
 char FragmentShaderName[] = "Fragment.frag";
 
 void Tree::init() {
-	srand(time(NULL));
+	srand(MAGIC_CONST);
 	root = new Node(this, -1, MAX_STEP, false);
 	
 	useTexture = true;
-	swing = false;
-	currentSwing = false;
 	phi = theta = 0;
 	radius = 5;
-	h = v = 0.0f;
-	mouseX = windowWidth / 2;
-	mouseY = windowHeight / 2;
-	mTime = 0;
-	cTime = glutGet(GLUT_ELAPSED_TIME);
 
 	eye = glm::vec3(0, 0, radius);
 	cen = glm::vec3(0, 0, 0);
 	up =  glm::vec3(0, 1, 0);
-	dir = glm::normalize(cen - eye);
-	rDir = glm::cross(dir, up);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -135,6 +126,7 @@ void Tree::drawNode(Node &node) {
 	glm::mat4x4 normalMatrix;
 
 	glm::mat4x4 modelMatrix = node.getModelMatrix();
+
   //modelViewMatrix consists of viewMatrix and modelMatrix
 	modelViewMatrix = viewMatrix*modelMatrix;
   //calculate normal matrix 
