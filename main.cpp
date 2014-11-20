@@ -38,13 +38,6 @@ void display()
 }
 
 void timerFunc(int data) {
-  if (tree.swing) {
-    static int direction = 1;
-    tree.currentSwing += direction;
-    if (tree.currentSwing == -SWINGS || tree.currentSwing == SWINGS ) {
-      direction = -direction;
-    }
-  }
   tree.grow();
   glutPostRedisplay();
   glutTimerFunc(100, timerFunc, 1);
@@ -72,7 +65,7 @@ void keyboard(unsigned char key, int mx, int my)
 void mouse(int button, int mode,int posx, int posy)
 {
   tree.mouse(button, mode, posx, posy);
-
+	
 }
 
 void passiveMouse(int posx, int posy) {
