@@ -13,7 +13,7 @@ public:
 	virtual void DoOperation(fstream &file, int &data) = 0;
 	virtual void DoOperation(fstream &file, bool &data) = 0;
 	virtual void DoOperation(fstream &file, float &data) = 0;
-	virtual ~Operation();
+	virtual ~Operation() = 0;
 };
 
 class ReadOperation
@@ -31,23 +31,79 @@ public:
 	virtual void DoOperation(fstream &file, float &data) {
 		file >> data;
 	}
+	virtual ~ReadOperation() {};
 };
 
 class WriteOperation
 {
 public:
 	virtual void DoOperation(fstream &file, unsigned &data) {
-		file << data;
+		file << data << " ";
 	}
 	virtual void DoOperation(fstream &file, int &data) {
-		file << data;
+		file << data << " ";
 	}
 	virtual void DoOperation(fstream &file, bool &data) {
-		file << data;
+		file << data << " ";
 	}
 	virtual void DoOperation(fstream &file, float &data) {
-		file << data;
+		file << data << " ";
 	}
+	virtual ~WriteOperation() {};
+};
+
+class BinaryReadOperation
+{
+public:
+	virtual void DoOperation(fstream &file, unsigned &data) {
+		for (unsigned size = 0, data = 0; size < sizeof(data); ++size) {
+			data |= file.get() << (8 * size);
+		}
+	}
+	virtual void DoOperation(fstream &file, int &data) {
+		for (unsigned size = 0, data = 0; size < sizeof(data); ++size) {
+			data |=file.get() << (8 * size);
+		}
+	}
+	virtual void DoOperation(fstream &file, bool &data) {
+		for (unsigned size = 0, data = 0; size < sizeof(data); ++size) {
+			data |= file.get() << (8 * size);
+		}
+	}
+	virtual void DoOperation(fstream &file, float &data) {
+		int *fData = (int *) &data;
+		for (unsigned size = 0, data = 0; size < sizeof(*fData); ++size) {
+			*fData |= file.get() << (8 * size);
+		}
+	}
+	virtual ~BinaryReadOperation() {};
+};
+
+class BinaryWriteOperation
+{
+public:
+	virtual void DoOperation(fstream &file, unsigned &data) {
+		for (unsigned size = sizeof(data); size; --size, data >>= 8) {
+			file.put( static_cast <char> (data & 0xFF) );
+		}
+	}
+	virtual void DoOperation(fstream &file, int &data) {
+		for (unsigned size = sizeof(data); size; --size, data >>= 8) {
+			file.put( static_cast <char> (data & 0xFF) );
+		}
+	}
+	virtual void DoOperation(fstream &file, bool &data) {
+		for (unsigned size = sizeof(data); size; --size, data >>= 8) {
+			file.put( static_cast <char> (data & 0xFF) );
+		}
+	}
+	virtual void DoOperation(fstream &file, float &data) {
+		int *fData = (int *) &data;
+		for (unsigned size = sizeof(*fData); size; --size, *fData >>= 8) {
+			file.put( static_cast <char> (*fData & 0xFF) );
+		}
+	}
+	virtual ~BinaryWriteOperation() {};
 };
 
 enum ProcessMode {
@@ -74,19 +130,19 @@ struct NodeData
 	void processFile(fstream &file, enum ProcessMode mode);
 };
 
-enum FileMode {
-	BINARY_READ  = std::fstream::in  | std::fstream::binary,
-	BINARY_WRITE = std::fstream::out | std::fstream::binary,
-	TEXT_READ    = std::fstream::in                        ,
-	TEXT_WRITE   = std::fstream::out 
-};
+#define BINARY_READ  std::fstream::in  | std::fstream::binary
+#define BINARY_WRITE std::fstream::out | std::fstream::binary
+#define TEXT_READ    std::fstream::in                        
+#define TEXT_WRITE   std::fstream::out 
 
 class Reader
 {
 	fstream file;
+	ios_base::openmode mode;
 public:
-	Reader(std::string fileName, ios_base::openmode mode) 
-	: file(fileName, mode) {}
+	Reader(std::string fileName, ios_base::openmode m) : mode(m) {
+		file.open(fileName, mode);
+	}
 	~Reader() {
 		file.close();
 	}
@@ -98,11 +154,14 @@ public:
 class Writer
 {
 	fstream file;
+	ios_base::openmode mode;
 public:
-	Writer(std::string fileName, ios_base::openmode mode) 
-	: file(fileName, mode) {}
+	Writer(std::string fileName, ios_base::openmode m) : mode(m) {
+		file.open(fileName, mode);
+	}
 	~Writer() {
 		file.close();
+		std::cout << "File closed" << std::endl;
 	}
 	void writeNode(Node &node);
 	void writeModel(Node &root);

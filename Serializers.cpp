@@ -1,4 +1,5 @@
 #include "Serializers.h"
+#include <queue>
 
 using namespace std;
 
@@ -49,15 +50,28 @@ NodeData Reader::readNode() {
 	return result;
 }
 
+void Writer::writeNode(Node &node) {
+	NodeData toWrite(node);
+	toWrite.processFile(file, WRITE_FILE);
+}
+
 void Reader::readModel(Node &root) {
 	
 }
 
 
-void Writer::writeNode(Node &node) {
-	
-}
-
 void Writer::writeModel(Node &root) {
-
+	writeNode(root);
+	std::cout << "Root written" << std::endl;
+	queue<Node *> nodeQueue;
+	nodeQueue.push(&root);
+	while (nodeQueue.size()) {
+		Node *current = nodeQueue.front();
+		nodeQueue.pop();
+		writeNode(*current);
+		for (unsigned i = 0 ; i < current->children.size() ; ++i) {
+			nodeQueue.push(&current->children[i]);
+		}
+	}
+	std::cout << "All data written" << std::endl;
 }

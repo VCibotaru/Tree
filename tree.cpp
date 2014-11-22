@@ -1,9 +1,11 @@
 #include "tree.h"
 #include "node.h"
-
+#include "Serializers.h"
 
 const float THETA_INC = M_PI / 10.0f;
 const float PHI_INC = M_PI / 10.0f;
+const std::string BINARY_FILE_NAME("binary");
+const std::string   TEXT_FILE_NAME("text.txt");
 
 Tree::~Tree() {
 	delete pBranch;
@@ -41,6 +43,19 @@ void Tree::keyboard(unsigned char key, int mx, int my)
 		eye = cen + radius * glm::normalize(eye - cen);
 		return;
 	}
+	if (key == 'i') {
+		std::cout << "Writing to binary file" << std::endl;
+		Writer binaryWriter(BINARY_FILE_NAME, BINARY_WRITE);
+		binaryWriter.writeModel(*root);
+		return;
+	}
+	if (key == 'k') {
+		std::cout << "Writing to text file" << std::endl;
+		Writer textWriter(TEXT_FILE_NAME, TEXT_WRITE);
+		textWriter.writeModel(*root);
+		return;
+	}
+
 	switch (key) {
 		case 'w':
 			if (theta - THETA_INC < - M_PI / 2) {
