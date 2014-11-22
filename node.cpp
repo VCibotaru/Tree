@@ -33,7 +33,6 @@ parent(_parent)
 		initialMatrix = glm::translate(initialMatrix, glm::vec3(ROOT_TRANS_X, ROOT_TRANS_Y, ROOT_TRANS_Z));
 	}
 	else {
-		std::cout << height << std::endl;
 		glm::vec4 tr = _parent->getModelMatrix() * glm::vec4(0.0f, height, 0.0f, 1.0f);
 		initialMatrix = glm::translate(initialMatrix, glm::vec3(tr.x, tr.y, tr.z));
 	}

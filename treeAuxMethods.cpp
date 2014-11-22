@@ -9,7 +9,7 @@ char VertexShaderName[] = "Vertex.vert";
 char FragmentShaderName[] = "Fragment.frag";
 
 void Tree::init() {
-	srand(MAGIC_CONST);
+	srand(time(NULL));
 	root = new Node(this, -1, MAX_STEP, false);
 	
 	useTexture = true;

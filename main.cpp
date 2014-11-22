@@ -32,12 +32,12 @@ void reshape(int width, int height) {
 
 void display()
 {
+  tree.grow();
+  tree.drawNodes();
 
 }
 
 void timerFunc(int data) {
-  tree.grow();
-  tree.drawNodes();
   glutPostRedisplay();
   glutTimerFunc(100, timerFunc, 1);
 }
@@ -64,7 +64,7 @@ void keyboard(unsigned char key, int mx, int my)
 void mouse(int button, int mode,int posx, int posy)
 {
   tree.mouse(button, mode, posx, posy);
-	
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ int main (int argc, char* argv[])
   glutIdleFunc(update);
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
-  glutTimerFunc(100, timerFunc, 0);
+  //glutTimerFunc(100, timerFunc, 0);
 
   glewInit();
   const char * slVer = (const char *) glGetString ( GL_SHADING_LANGUAGE_VERSION );
